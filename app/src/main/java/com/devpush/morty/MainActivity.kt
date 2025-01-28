@@ -17,7 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.devpush.morty.ui.theme.MortyTheme
 import com.devpush.network.KtorClient
-import com.devpush.network.models.remote.RemoteCharacter
+import com.devpush.network.models.domain.Character
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
@@ -29,12 +29,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var character: RemoteCharacter? by remember{
+            var character: Character? by remember{
                 mutableStateOf(null)
             }
 
             LaunchedEffect(Unit) {
-                character = ktorClient.getCharacters(1)
+                character = ktorClient.getCharacters(55)
             }
 
 
