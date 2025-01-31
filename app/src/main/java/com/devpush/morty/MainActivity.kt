@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -20,6 +21,8 @@ import com.devpush.network.KtorClient
 import com.devpush.network.models.domain.Character
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import com.devpush.morty.screens.CharacterDetailsScreen
+import com.devpush.morty.ui.theme.RickPrimary
 
 class MainActivity : ComponentActivity() {
 
@@ -29,24 +32,12 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            var character: Character? by remember{
-                mutableStateOf(null)
-            }
-
-            LaunchedEffect(Unit) {
-                character = ktorClient.getCharacters(55)
-            }
-
-
             MortyTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Column {
-                        Greeting(
-                            name = "Android",
-                            modifier = Modifier.padding(innerPadding)
-                        )
-                        Text(text = character?.name ?:"No Name Found")
-                    }
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color= RickPrimary
+                ) {
+                    CharacterDetailsScreen(characterId = 1,onback, ktorClient)
 
                 }
             }
@@ -54,18 +45,6 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+private val onback = {
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    MortyTheme {
-        Greeting("Android")
-    }
 }
