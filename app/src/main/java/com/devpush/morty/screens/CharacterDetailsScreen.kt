@@ -27,6 +27,7 @@ import com.devpush.network.models.domain.Character
 @Composable
 fun CharacterDetailsScreen(
     characterId: Int,
+    onEpisodeClicked: (Int) -> Unit,
     onBackClicked: () -> Unit,
     ktorClient: KtorClient
 ){
