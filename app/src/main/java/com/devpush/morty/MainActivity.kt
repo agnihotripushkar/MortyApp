@@ -43,10 +43,14 @@ import androidx.navigation.NavHostController
 import com.devpush.morty.screens.AllEpisodesScreen
 import com.devpush.morty.screens.CharacterEpisodeScreen
 import com.devpush.morty.screens.SearchScreen
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private val ktorClient = KtorClient()
+    @Inject
+    lateinit var ktorClient: KtorClient
 
     sealed class NavDestination(val title: String, val route: String, val icon: ImageVector) {
         object Home :
