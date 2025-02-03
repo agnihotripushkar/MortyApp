@@ -154,8 +154,7 @@ private fun NavigationHost(
             CharacterDetailsScreen(
                 characterId = characterId,
                 onEpisodeClicked = { navController.navigate("character_episodes/$it") },
-                onBackClicked = { navController.navigateUp() },
-                ktorClient = ktorClient
+                onBackClicked = { navController.navigateUp() }
             )
         }
 

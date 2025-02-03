@@ -1,8 +1,11 @@
 package com.devpush.network
 
 import com.devpush.network.models.domain.Character
+import com.devpush.network.models.domain.CharacterPage
 import com.devpush.network.models.remote.RemoteCharacter
+import com.devpush.network.models.remote.RemoteCharacterPage
 import com.devpush.network.models.remote.toDomainCharacter
+import com.devpush.network.models.remote.toDomainCharacterPage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -15,7 +18,7 @@ import io.ktor.client.request.get
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
 
-class KtorClient{
+class KtorClient {
     private val client = HttpClient(OkHttp) {
         defaultRequest { url("https://rickandmortyapi.com/api/") }
 
@@ -31,13 +34,64 @@ class KtorClient{
         }
     }
 
-    suspend fun getCharacters(id:Int): ApiOperation<Character> {
+    private var characterCache = mutableMapOf<Int, Character>()
+
+    suspend fun getCharacters(id: Int): ApiOperation<Character> {
+        characterCache[id]?.let { return ApiOperation.Success(it) }
         return safeApiCall {
             client.get("character/$id")
                 .body<RemoteCharacter>()
                 .toDomainCharacter()
+                .also { characterCache[id] = it }
         }
     }
+
+    suspend fun getCharacterByPage(
+        pageNumber: Int,
+        queryParams: Map<String, String>
+    ): ApiOperation<CharacterPage> {
+        return safeApiCall {
+            client.get("character") {
+                url {
+                    parameters.append("page", pageNumber.toString())
+                    queryParams.forEach { parameters.append(it.key, it.value) }
+                }
+            }
+                .body<RemoteCharacterPage>()
+                .toDomainCharacterPage()
+        }
+    }
+
+    suspend fun searchAllCharactersByName(searchQuery: String): ApiOperation<List<Character>> {
+        val data = mutableListOf<Character>()
+        var exception: Exception? = null
+
+        getCharacterByPage(
+            pageNumber = 1,
+            queryParams = mapOf("name" to searchQuery)
+        ).onSuccess { firstPage ->
+            val totalPageCount = firstPage.info.pages
+            data.addAll(firstPage.characters)
+
+            repeat(totalPageCount - 1) { index ->
+                getCharacterByPage(
+                    pageNumber = index + 2,
+                    queryParams = mapOf("name" to searchQuery)
+                ).onSuccess { nextPage ->
+                    data.addAll(nextPage.characters)
+                }.onFailure { error ->
+                    exception = error
+                }
+
+                if (exception != null) { return@onSuccess }
+            }
+        }.onFailure {
+            exception = it
+        }
+
+        return exception?.let { ApiOperation.Failure(it) } ?: ApiOperation.Success(data)
+    }
+
 
     private inline fun <T> safeApiCall(apiCall: () -> T): ApiOperation<T> {
         return try {
