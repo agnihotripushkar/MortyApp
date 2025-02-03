@@ -2,10 +2,16 @@ package com.devpush.network
 
 import com.devpush.network.models.domain.Character
 import com.devpush.network.models.domain.CharacterPage
+import com.devpush.network.models.domain.Episode
+import com.devpush.network.models.domain.EpisodePage
 import com.devpush.network.models.remote.RemoteCharacter
 import com.devpush.network.models.remote.RemoteCharacterPage
+import com.devpush.network.models.remote.RemoteEpisode
+import com.devpush.network.models.remote.RemoteEpisodePage
 import com.devpush.network.models.remote.toDomainCharacter
 import com.devpush.network.models.remote.toDomainCharacterPage
+import com.devpush.network.models.remote.toDomainEpisode
+import com.devpush.network.models.remote.toDomainEpisodePage
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
@@ -83,7 +89,70 @@ class KtorClient {
                     exception = error
                 }
 
-                if (exception != null) { return@onSuccess }
+                if (exception != null) {
+                    return@onSuccess
+                }
+            }
+        }.onFailure {
+            exception = it
+        }
+
+        return exception?.let { ApiOperation.Failure(it) } ?: ApiOperation.Success(data)
+    }
+
+    suspend fun getEpisode(episodeId: Int): ApiOperation<Episode> {
+        return safeApiCall {
+            client.get("episode/$episodeId")
+                .body<RemoteEpisode>()
+                .toDomainEpisode()
+        }
+    }
+
+    suspend fun getEpisodes(episodeIds: List<Int>): ApiOperation<List<Episode>> {
+        return if (episodeIds.size == 1) {
+            getEpisode(episodeIds[0]).mapSuccess {
+                listOf(it)
+            }
+        } else {
+            val idsCommaSeparated = episodeIds.joinToString(separator = ",")
+            safeApiCall {
+                client.get("episode/$idsCommaSeparated")
+                    .body<List<RemoteEpisode>>()
+                    .map { it.toDomainEpisode() }
+            }
+        }
+    }
+
+    suspend fun getEpisodesByPage(pageIndex: Int): ApiOperation<EpisodePage> {
+        return safeApiCall {
+            client.get("episode") {
+                url {
+                    parameters.append("page", pageIndex.toString())
+                }
+            }
+                .body<RemoteEpisodePage>()
+                .toDomainEpisodePage()
+        }
+    }
+
+    suspend fun getAllEpisodes(): ApiOperation<List<Episode>> {
+        val data = mutableListOf<Episode>()
+        var exception: Exception? = null
+
+        getEpisodesByPage(pageIndex = 1).onSuccess { firstPage ->
+            val totalPageCount = firstPage.info.pages
+            data.addAll(firstPage.episodes)
+
+            repeat(totalPageCount - 1) { index ->
+                getEpisodesByPage(pageIndex = index + 2).onSuccess { nextPage ->
+                    data.addAll(nextPage.episodes)
+                }.onFailure { error ->
+                    exception = error
+                }
+
+                if (exception != null) {
+                    return@onSuccess
+                }
             }
         }.onFailure {
             exception = it
@@ -104,6 +173,13 @@ class KtorClient {
     sealed interface ApiOperation<T> {
         data class Success<T>(val data: T) : ApiOperation<T>
         data class Failure<T>(val exception: Exception) : ApiOperation<T>
+
+        fun <R> mapSuccess(transform: (T) -> R): ApiOperation<R> {
+            return when (this) {
+                is Success -> Success(transform(data))
+                is Failure -> Failure(exception)
+            }
+        }
 
         suspend fun onSuccess(block: suspend (T) -> Unit): ApiOperation<T> {
             if (this is Success) block(data)
