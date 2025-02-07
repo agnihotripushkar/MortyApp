@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -42,7 +43,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import com.devpush.morty.screens.AllEpisodesScreen
 import com.devpush.morty.screens.CharacterEpisodeScreen
-import com.devpush.morty.screens.SearchScreen
+import com.devpush.morty.screens.SaveScreen
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -59,8 +60,8 @@ class MainActivity : ComponentActivity() {
         object Episodes :
             NavDestination(title = "Episodes", route = "episodes", icon = Icons.Filled.PlayArrow)
 
-        object Search :
-            NavDestination(title = "Search", route = "search", icon = Icons.Filled.Search)
+        object Save :
+            NavDestination(title = "Save", route = "save", icon = Icons.Filled.Star)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -69,7 +70,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             val navController = rememberNavController()
             val items = listOf(
-                NavDestination.Home, NavDestination.Episodes, NavDestination.Search
+                NavDestination.Home, NavDestination.Episodes, NavDestination.Save
             )
             var selectedIndex by remember { mutableIntStateOf(0) }
 
@@ -104,9 +105,7 @@ class MainActivity : ComponentActivity() {
                                         selectedTextColor = RickAction,
                                         indicatorColor = Color.Transparent
                                     )
-
                                 )
-
                             }
                         }
                     }
@@ -181,12 +180,12 @@ private fun NavigationHost(
             }
         }
 
-        composable(route = MainActivity.NavDestination.Search.route) {
-            SearchScreen(
-                onCharacterClicked = { characterId ->
-                    navController.navigate("character_details/$characterId")
-                }
-            )
+        composable(route = MainActivity.NavDestination.Save.route) {
+            Column(
+                modifier = Modifier.fillMaxSize(),
+            ) {
+                SaveScreen()
+            }
         }
     }
 }

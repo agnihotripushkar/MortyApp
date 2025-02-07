@@ -19,6 +19,7 @@ ktorVersion = "2.3.6"
 navVersion = "2.7.7"
 hilt = "2.48"
 hiltNavigation = "1.2.0"
+lifecycleRuntimeKtxVersion = "2.8.2"
 
 [libraries]
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt"}
@@ -36,6 +37,7 @@ ktor-serialization-kotlinx-json = { module = "io.ktor:ktor-serialization-kotlinx
 # Android
 navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navVersion" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+lifecycle-runtime-compose = {module="androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeKtxVersion"}
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
