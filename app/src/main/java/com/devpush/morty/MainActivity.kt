@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -12,7 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -40,10 +40,13 @@ import androidx.navigation.navArgument
 import com.devpush.morty.screens.HomeScreen
 import com.devpush.morty.ui.theme.RickAction
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.res.vectorResource
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import com.devpush.morty.screens.AllEpisodesScreen
 import com.devpush.morty.screens.CharacterEpisodeScreen
 import com.devpush.morty.screens.SaveScreen
+import com.devpush.morty.viewmodels.SplashViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -53,9 +56,12 @@ class MainActivity : ComponentActivity() {
     @Inject
     lateinit var ktorClient: KtorClient
 
+    private val viewModel by viewModels<SplashViewModel>()
+
     sealed class NavDestination(val title: String, val route: String, val icon: ImageVector) {
         object Home :
-            NavDestination(title = "Home", route = "home_screen", icon = Icons.Filled.Home)
+            NavDestination(title = "Home", route = "home_screen",
+                icon = Icons.Filled.Home)
 
         object Episodes :
             NavDestination(title = "Episodes", route = "episodes", icon = Icons.Filled.PlayArrow)
@@ -65,8 +71,17 @@ class MainActivity : ComponentActivity() {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_Morty)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        installSplashScreen()
+            .apply {
+                setKeepOnScreenCondition {
+                    viewModel.isLoading.value
+                }
+            }
+
         setContent {
             val navController = rememberNavController()
             val items = listOf(
