@@ -17,12 +17,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.runtime.Composable
+import com.devpush.morty.R
 import com.devpush.morty.core.commonui.LoadingState
-import com.devpush.morty.core.commonui.SimpleToolbar
 import com.devpush.morty.core.commonui.EpisodeRowComponent
 import com.devpush.morty.ui.theme.RickAction
 import com.devpush.morty.ui.theme.RickPrimary
@@ -47,7 +49,7 @@ fun AllEpisodesScreen(
 
     when (val state = uiState) {
         AllEpisodesUiState.Error -> {
-            Text(text = "Something went wrong")
+            Text(text = stringResource(R.string.error_generic))
         }
 
         AllEpisodesUiState.Loading -> {
@@ -55,25 +57,22 @@ fun AllEpisodesScreen(
         }
 
         is AllEpisodesUiState.Success -> {
-            Column {
-                SimpleToolbar("All Episodes")
-                LazyColumn(
-                    contentPadding = PaddingValues(16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    state.data.forEach { mapEntry ->
-                        stickyHeader(key = mapEntry.key) {
-                            Header(
-                                seasonName = mapEntry.key,
-                                uniqueCharacterCount = mapEntry.value.flatMap {
-                                    it.characterIdsInEpisode
-                                }.toSet().size
-                            )
-                        }
+            LazyColumn(
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                state.data.forEach { mapEntry ->
+                    stickyHeader(key = mapEntry.key) {
+                        Header(
+                            seasonName = mapEntry.key,
+                            uniqueCharacterCount = mapEntry.value.flatMap {
+                                it.characterIdsInEpisode
+                            }.toSet().size
+                        )
+                    }
 
-                        mapEntry.value.forEach { episode ->
-                            item(key = episode.id) { EpisodeRowComponent(episode = episode) }
-                        }
+                    mapEntry.value.forEach { episode ->
+                        item(key = episode.id) { EpisodeRowComponent(episode = episode) }
                     }
                 }
             }
@@ -90,7 +89,7 @@ private fun Header(seasonName: String, uniqueCharacterCount: Int) {
     ) {
         Text(text = seasonName, color = Color.White, fontSize = 32.sp)
         Text(
-            text = "$uniqueCharacterCount unique characters",
+            text = stringResource(R.string.label_unique_characters, uniqueCharacterCount),
             color = Color.White,
             fontSize = 22.sp
         )

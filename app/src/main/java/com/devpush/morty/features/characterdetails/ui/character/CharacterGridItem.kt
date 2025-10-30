@@ -13,12 +13,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.devpush.morty.R
 import com.devpush.morty.core.commonui.CharacterImage
 import com.devpush.morty.ui.theme.RickAction
+import com.devpush.morty.ui.theme.RickGradientStart
+import com.devpush.morty.ui.theme.RickTextPrimary
 import com.devpush.network.models.domain.Character
 import com.devpush.network.models.domain.CharacterGender
 import com.devpush.network.models.domain.CharacterStatus
@@ -33,10 +37,10 @@ fun CharacterGridItem(
         modifier = modifier
             .border(
                 width = 1.dp,
-                brush = Brush.verticalGradient(listOf(Color.Transparent, RickAction)),
-                shape = RoundedCornerShape(12.dp)
+                brush = Brush.verticalGradient(listOf(RickGradientStart, RickAction)),
+                shape = RoundedCornerShape(16.dp)
             )
-            .clip(RoundedCornerShape(12.dp))
+            .clip(RoundedCornerShape(16.dp))
             .clickable { onClick() }
     ){
         Box {
@@ -48,11 +52,11 @@ fun CharacterGridItem(
         }
         Text(
             text = character.name,
-            color = RickAction,
+            color = RickTextPrimary,
             fontWeight = FontWeight.Bold,
-            fontSize = 26.sp,
-            lineHeight = 26.sp,
-            modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp)
+            fontSize = 18.sp,
+            lineHeight = 20.sp,
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp)
         )
     }
 }
@@ -63,21 +67,21 @@ private fun CharacterGridItemPreview() {
     CharacterGridItem(
         modifier = Modifier.fillMaxWidth(),
         character = Character(
-            created = "timestamp",
+            created = stringResource(R.string.preview_timestamp),
             episodeIds = listOf(1, 2, 3, 4, 5),
             gender = CharacterGender.Male,
             id = 123,
             imageUrl = "https://rickandmortyapi.com/api/character/avatar/2.jpeg",
             location = Character.Location(
-                name = "Earth",
+                name = stringResource(R.string.preview_location_earth),
                 url = ""
             ),
-            name = "Morty Smith",
+            name = stringResource(R.string.preview_character_name_morty),
             origin = Character.Origin(
-                name = "Earth",
+                name = stringResource(R.string.preview_location_earth),
                 url = ""
             ),
-            species = "Human",
+            species = stringResource(R.string.preview_species_human),
             status = CharacterStatus.Alive,
             type = ""
         ),

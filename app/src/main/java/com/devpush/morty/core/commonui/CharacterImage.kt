@@ -9,9 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
+import com.devpush.morty.R
 
 private val defaultModifier = Modifier
     .fillMaxWidth()
@@ -23,7 +25,7 @@ fun CharacterImage(imageUrl: String, modifier: Modifier = defaultModifier){
 
     SubcomposeAsyncImage(
         model = imageUrl,
-        contentDescription = "Character image",
+        contentDescription = stringResource(R.string.accessibility_character_image),
         modifier = modifier,
         loading = {
             LoadingState()
@@ -35,7 +37,7 @@ fun CharacterImage(imageUrl: String, modifier: Modifier = defaultModifier){
         @Composable
         private fun CharacterImagePreview() {
             CharacterImage(
-                imageUrl = "image url",
+                imageUrl = stringResource(R.string.preview_image_url),
                 modifier = defaultModifier.then(
                     Modifier.background(
                         brush = Brush.verticalGradient(listOf(Color.White, Color.Black))

@@ -19,16 +19,18 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.devpush.morty.R
 import com.devpush.morty.features.characterdetails.ui.character.CharacterDetailsNamePlateComponent
 import com.devpush.morty.core.commonui.CharacterImage
 import com.devpush.morty.core.commonui.DataPoint
 import com.devpush.morty.core.commonui.DataPointComponent
 import com.devpush.morty.core.commonui.LoadingState
-import com.devpush.morty.core.commonui.SimpleToolbar
 import com.devpush.morty.ui.theme.RickAction
 import com.devpush.network.models.domain.Character
 
@@ -53,13 +55,10 @@ fun CharacterDetailsScreen(
 
     val state by viewModel.stateFlow.collectAsState()
 
-    Column {
-        SimpleToolbar(title = "Character Details",
-            onBackAction = onBackClicked)
-        LazyColumn (
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp)
-        ){
+    LazyColumn (
+        modifier = Modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp)
+    ){
             when(val viewState = state){
                 CharacterDetailsViewState.Loading -> item { LoadingState() }
                 is CharacterDetailsViewState.Error -> {
@@ -94,7 +93,7 @@ fun CharacterDetailsScreen(
                     // Button
                     item {
                         Text(
-                            text = "View all episodes",
+                            text = stringResource(R.string.action_view_all_episodes),
                             color = RickAction,
                             fontSize = 18.sp,
                             textAlign = TextAlign.Center,
@@ -118,5 +117,3 @@ fun CharacterDetailsScreen(
             }
         }
     }
-
-}

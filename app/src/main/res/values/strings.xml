@@ -1,3 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Application metadata -->
     <string name="app_name">Morty</string>
+    <string name="app_title_default">Rick &amp; Morty</string>
+    
+    <!-- Screen titles -->
+    <string name="screen_title_all_characters">All Characters</string>
+    <string name="screen_title_all_episodes">All Episodes</string>
+    <string name="screen_title_character_details">Character Details</string>
+    <string name="screen_title_episode_details">Episode Details</string>
+    
+    <!-- Action buttons and labels -->
+    <string name="action_view_all_episodes">View all episodes</string>
+    <string name="action_retry">Retry</string>
+    <string name="action_refresh">Refresh</string>
+    
+    <!-- Content labels -->
+    <string name="label_season">Season %1$s</string>
+    <string name="label_unique_characters">%1$d unique characters</string>
+    <string name="label_episode_number">Episode %1$s</string>
+    <string name="label_episode_count">%1$d ep</string>
+    
+    <!-- Status and state labels -->
+    <string name="status_loading">Loading…</string>
+    <string name="status_empty">No items found</string>
+    <string name="label_status">Status: %1$s</string>
+    
+    <!-- Data point labels -->
+    <string name="data_point_last_known_location">Last known location</string>
+    <string name="data_point_species">Species</string>
+    <string name="data_point_gender">Gender</string>
+    <string name="data_point_type">Type</string>
+    <string name="data_point_origin">Origin</string>
+    <string name="data_point_episode_count">Episode count</string>
+    
+    <!-- Preview and test strings -->
+    <string name="preview_character_name_rick">Rick Sanchez</string>
+    <string name="preview_character_name_morty">Morty Smith</string>
+    <string name="preview_image_url">image url</string>
+    <string name="preview_episode_name">The Ricklantis Mixup</string>
+    <string name="preview_episode_air_date">September 10, 2017</string>
+    <string name="preview_location_earth">Earth</string>
+    <string name="preview_species_human">Human</string>
+    <string name="preview_data_point_title_1">Title 1</string>
+    <string name="preview_data_point_title_2">Title 2</string>
+    <string name="preview_data_point_title_3">Title 3</string>
+    <string name="preview_data_point_title_4">Title 4</string>
+    <string name="preview_data_point_title_5">Title 5</string>
+    <string name="preview_data_point_description_1">Description 1</string>
+    <string name="preview_data_point_description_2">Description 2</string>
+    <string name="preview_data_point_description_3">Description 3</string>
+    <string name="preview_data_point_description_4">Description 4</string>
+    <string name="preview_data_point_description_5">Description 5</string>
+    <string name="preview_data_point_location_title">Last known location</string>
+    <string name="preview_data_point_location_description">Citadel of Ricks</string>
+    <string name="preview_data_point_name_title">Name</string>
+    <string name="preview_data_point_episode_title">Episode</string>
+    <string name="preview_timestamp">timestamp</string>
+    
 </resources>

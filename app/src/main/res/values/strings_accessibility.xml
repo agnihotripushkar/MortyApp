@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Accessibility strings for screen readers and assistive technologies -->
+    
+    <!-- Navigation accessibility -->
+    <string name="accessibility_navigate_back">Navigate back to previous screen</string>
+    <string name="accessibility_bottom_nav">Bottom navigation bar</string>
+    
+    <!-- State descriptions -->
+    <string name="accessibility_state_selected">Currently selected</string>
+    <string name="accessibility_state_not_selected">Not selected</string>
+    
+    <!-- Content descriptions -->
+    <string name="accessibility_character_image">Character profile image</string>
+    <string name="accessibility_episode_item">Episode item</string>
+    <string name="accessibility_app_title">App title: %1$s</string>
+    <string name="accessibility_nav_action">Navigate to %1$s</string>
+    <string name="accessibility_nav_current">Currently viewing %1$s</string>
+    
+</resources>

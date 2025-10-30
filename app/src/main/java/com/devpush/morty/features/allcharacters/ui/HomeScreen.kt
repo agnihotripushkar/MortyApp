@@ -18,7 +18,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.devpush.morty.features.characterdetails.ui.character.CharacterGridItem
 import com.devpush.morty.core.commonui.LoadingState
-import com.devpush.morty.core.commonui.SimpleToolbar
 import com.devpush.network.models.domain.Character
 
 sealed interface HomeScreenViewState {
@@ -59,25 +58,22 @@ fun HomeScreen(
             LoadingState()
         }
         is HomeScreenViewState.GridDisplay ->{
-            Column {
-                SimpleToolbar(title = "All characters")
-                LazyVerticalGrid(
-                    state = scrollState,
-                    contentPadding = PaddingValues(all = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    columns = GridCells.Fixed(2),
-                    content = {
-                        items(
-                            items = state.characters,
-                            key = { it.id }
-                        ) { character ->
-                            CharacterGridItem(modifier = Modifier, character = character) {
-                                onCharacterSelected(character.id)
-                            }
+            LazyVerticalGrid(
+                state = scrollState,
+                contentPadding = PaddingValues(all = 16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                columns = GridCells.Fixed(2),
+                content = {
+                    items(
+                        items = state.characters,
+                        key = { it.id }
+                    ) { character ->
+                        CharacterGridItem(modifier = Modifier, character = character) {
+                            onCharacterSelected(character.id)
                         }
-                    })
-            }
+                    }
+                })
         }
     }
 

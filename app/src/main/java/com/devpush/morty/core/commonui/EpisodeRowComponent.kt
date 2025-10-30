@@ -10,11 +10,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.devpush.morty.R
 import com.devpush.morty.ui.theme.RickTextPrimary
 
 @Composable
@@ -22,7 +24,7 @@ fun EpisodeRowComponent(episode: Episode) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         DataPointComponent(
             dataPoint = DataPoint(
-                title = "Episode",
+                title = stringResource(R.string.preview_data_point_episode_title),
                 description = episode.episodeNumber.toString()
             )
         )
@@ -52,10 +54,10 @@ fun EpisodeRowComponent(episode: Episode) {
 private fun EpisodeRowComponentPreview() {
     val episode = Episode(
         id = 28,
-        name = "The Ricklantis Mixup",
+        name = stringResource(R.string.preview_episode_name),
         seasonNumber = 3,
         episodeNumber = 7,
-        airDate = "September 10, 2017",
+        airDate = stringResource(R.string.preview_episode_air_date),
         characterIdsInEpisode = listOf(
             1,
             2,

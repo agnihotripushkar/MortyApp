@@ -4,52 +4,96 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
-import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.devpush.morty.R
+import com.devpush.morty.core.commonui.M3ExpressiveBottomToolbar
 import com.devpush.morty.features.allepisodes.ui.AllEpisodesScreen
 import com.devpush.morty.features.characterdetails.ui.CharacterDetailsScreen
 import com.devpush.morty.features.episode.ui.CharacterEpisodeScreen
 import com.devpush.morty.features.allcharacters.ui.HomeScreen
-import com.devpush.morty.features.bookmark.ui.SaveScreen
-import com.devpush.morty.core.navigation.NavDestination
-import com.devpush.morty.ui.theme.RickAction
+import com.devpush.morty.core.commonui.M3ExpressiveTopToolbar
 import com.devpush.morty.ui.theme.RickPrimary
 import com.devpush.network.KtorClient // Assuming KtorClient is needed by screens
 
+/**
+ * Data class representing the current navigation state
+ */
+data class NavigationState(
+    val currentRoute: String,
+    val title: String,
+    val showBackButton: Boolean = false
+)
+
+/**
+ * Determines the navigation state based on the current route and back stack entry
+ */
+@Composable
+private fun getNavigationState(
+    currentRoute: String,
+    navBackStackEntry: NavBackStackEntry?
+): NavigationState {
+    return when {
+        currentRoute == NavDestination.Home.route -> NavigationState(
+            currentRoute = currentRoute,
+            title = stringResource(R.string.nav_title_home)
+        )
+        currentRoute == NavDestination.Episodes.route -> NavigationState(
+            currentRoute = currentRoute,
+            title = stringResource(R.string.nav_title_episodes)
+        )
+        currentRoute.contains("character_details") -> NavigationState(
+            currentRoute = currentRoute,
+            title = stringResource(R.string.nav_title_character_details),
+            showBackButton = true
+        )
+        currentRoute.contains("character_episodes") -> NavigationState(
+            currentRoute = currentRoute,
+            title = stringResource(R.string.nav_title_character_episodes),
+            showBackButton = true
+        )
+        else -> NavigationState(
+            currentRoute = currentRoute,
+            title = stringResource(R.string.app_title_default)
+        )
+    }
+}
 
 @Composable
 fun AppNavigation(ktorClient: KtorClient) {
     val navController = rememberNavController()
-    val items = listOf(
-        NavDestination.Home, NavDestination.Episodes, NavDestination.Save
-    )
-    var selectedIndex by remember { mutableIntStateOf(0) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route ?: NavDestination.Home.route
+    
+    // Create navigation state with title mapping
+    val navigationState = getNavigationState(currentRoute, navBackStackEntry)
 
     Scaffold(
+        topBar = {
+            M3ExpressiveTopToolbar(
+                title = navigationState.title,
+                showBackButton = navigationState.showBackButton,
+                onBackClick = if (navigationState.showBackButton) {
+                    { navController.navigateUp() }
+                } else null,
+            )
+        },
         bottomBar = {
-            AppBottomNavigationBar(
-                items = items,
-                selectedIndex = selectedIndex,
-                onItemSelected = { index, route ->
-                    selectedIndex = index
+            M3ExpressiveBottomToolbar(
+                currentRoute = currentRoute,
+                onNavigationClick = { route ->
                     navController.navigate(route) {
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
@@ -69,32 +113,7 @@ fun AppNavigation(ktorClient: KtorClient) {
     }
 }
 
-@Composable
-fun AppBottomNavigationBar(
-    items: List<NavDestination>,
-    selectedIndex: Int,
-    onItemSelected: (index: Int, route: String) -> Unit
-) {
-    NavigationBar(
-        containerColor = RickPrimary
-    ) {
-        items.forEachIndexed { index, screen ->
-            NavigationBarItem(
-                icon = {
-                    Icon(imageVector = screen.icon, contentDescription = screen.title)
-                },
-                label = { Text(screen.title) },
-                selected = index == selectedIndex,
-                onClick = { onItemSelected(index, screen.route) },
-                colors = NavigationBarItemDefaults.colors(
-                    selectedIconColor = RickAction,
-                    selectedTextColor = RickAction,
-                    indicatorColor = Color.Transparent // Consider making this theme-dependent
-                )
-            )
-        }
-    }
-}
+
 
 @Composable
 fun AppNavigationHost(
@@ -149,11 +168,6 @@ fun AppNavigationHost(
         composable(route = NavDestination.Episodes.route) {
             // Column might not be needed if AllEpisodesScreen handles its own layout
             AllEpisodesScreen()
-        }
-
-        composable(route = NavDestination.Save.route) {
-            // Column might not be needed if SaveScreen handles its own layout
-            SaveScreen()
         }
     }
 }

@@ -3,6 +3,8 @@ package com.devpush.morty.features.characterdetails.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.devpush.morty.core.commonui.DataPoint
+import com.devpush.morty.core.constants.ErrorConstants
+import com.devpush.morty.core.constants.UiConstants
 import com.devpush.morty.features.characterdetails.domain.repository.CharacterRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,14 +27,14 @@ class CharacterDetailsViewModel @Inject constructor(
         _internalStorageFlow.update { return@update CharacterDetailsViewState.Loading }
         characterRepository.fetchCharacter(characterId).onSuccess { character ->
             val dataPoints = buildList {
-                add(DataPoint("Last known location", character.location.name))
-                add(DataPoint("Species", character.species))
-                add(DataPoint("Gender", character.gender.displayName))
+                add(DataPoint(UiConstants.DATA_POINT_LAST_KNOWN_LOCATION, character.location.name))
+                add(DataPoint(UiConstants.DATA_POINT_SPECIES, character.species))
+                add(DataPoint(UiConstants.DATA_POINT_GENDER, character.gender.displayName))
                 character.type.takeIf { it.isNotEmpty() }?.let { type ->
-                    add(DataPoint("Type", type))
+                    add(DataPoint(UiConstants.DATA_POINT_TYPE, type))
                 }
-                add(DataPoint("Origin", character.origin.name))
-                add(DataPoint("Episode count", character.episodeIds.size.toString()))
+                add(DataPoint(UiConstants.DATA_POINT_ORIGIN, character.origin.name))
+                add(DataPoint(UiConstants.DATA_POINT_EPISODE_COUNT, character.episodeIds.size.toString()))
             }
             _internalStorageFlow.update {
                 return@update CharacterDetailsViewState.Success(
@@ -43,7 +45,7 @@ class CharacterDetailsViewModel @Inject constructor(
         }.onFailure { exception ->
             _internalStorageFlow.update {
                 return@update CharacterDetailsViewState.Error(
-                    message = exception.message ?: "Unknown error occurred"
+                    message = exception.message ?: ErrorConstants.UNKNOWN_ERROR
                 )
             }
         }

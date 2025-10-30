@@ -1,5 +1,6 @@
 package com.devpush.network
 
+import com.devpush.network.constants.NetworkConstants
 import com.devpush.network.models.domain.Character
 import com.devpush.network.models.domain.CharacterPage
 import com.devpush.network.models.domain.Episode
@@ -26,7 +27,7 @@ import kotlinx.serialization.json.Json
 
 class KtorClient {
     private val client = HttpClient(OkHttp) {
-        defaultRequest { url("https://rickandmortyapi.com/api/") }
+        defaultRequest { url(NetworkConstants.BASE_URL) }
 
         install(Logging) {
             logger = Logger.SIMPLE
@@ -45,7 +46,7 @@ class KtorClient {
     suspend fun getCharacters(id: Int): ApiOperation<Character> {
         characterCache[id]?.let { return ApiOperation.Success(it) }
         return safeApiCall {
-            client.get("character/$id")
+            client.get("${NetworkConstants.CHARACTER_ENDPOINT}${NetworkConstants.PATH_SEPARATOR}$id")
                 .body<RemoteCharacter>()
                 .toDomainCharacter()
                 .also { characterCache[id] = it }
@@ -57,9 +58,9 @@ class KtorClient {
         queryParams: Map<String, String>
     ): ApiOperation<CharacterPage> {
         return safeApiCall {
-            client.get("character") {
+            client.get(NetworkConstants.CHARACTER_ENDPOINT) {
                 url {
-                    parameters.append("page", pageNumber.toString())
+                    parameters.append(NetworkConstants.PARAM_PAGE, pageNumber.toString())
                     queryParams.forEach { parameters.append(it.key, it.value) }
                 }
             }
@@ -74,7 +75,7 @@ class KtorClient {
 
         getCharacterByPage(
             pageNumber = 1,
-            queryParams = mapOf("name" to searchQuery)
+            queryParams = mapOf(NetworkConstants.PARAM_NAME to searchQuery)
         ).onSuccess { firstPage ->
             val totalPageCount = firstPage.info.pages
             data.addAll(firstPage.characters)
@@ -82,7 +83,7 @@ class KtorClient {
             repeat(totalPageCount - 1) { index ->
                 getCharacterByPage(
                     pageNumber = index + 2,
-                    queryParams = mapOf("name" to searchQuery)
+                    queryParams = mapOf(NetworkConstants.PARAM_NAME to searchQuery)
                 ).onSuccess { nextPage ->
                     data.addAll(nextPage.characters)
                 }.onFailure { error ->
@@ -102,7 +103,7 @@ class KtorClient {
 
     suspend fun getEpisode(episodeId: Int): ApiOperation<Episode> {
         return safeApiCall {
-            client.get("episode/$episodeId")
+            client.get("${NetworkConstants.EPISODE_ENDPOINT}${NetworkConstants.PATH_SEPARATOR}$episodeId")
                 .body<RemoteEpisode>()
                 .toDomainEpisode()
         }
@@ -114,9 +115,9 @@ class KtorClient {
                 listOf(it)
             }
         } else {
-            val idsCommaSeparated = episodeIds.joinToString(separator = ",")
+            val idsCommaSeparated = episodeIds.joinToString(separator = NetworkConstants.QUERY_SEPARATOR)
             safeApiCall {
-                client.get("episode/$idsCommaSeparated")
+                client.get("${NetworkConstants.EPISODE_ENDPOINT}${NetworkConstants.PATH_SEPARATOR}$idsCommaSeparated")
                     .body<List<RemoteEpisode>>()
                     .map { it.toDomainEpisode() }
             }
@@ -125,9 +126,9 @@ class KtorClient {
 
     suspend fun getEpisodesByPage(pageIndex: Int): ApiOperation<EpisodePage> {
         return safeApiCall {
-            client.get("episode") {
+            client.get(NetworkConstants.EPISODE_ENDPOINT) {
                 url {
-                    parameters.append("page", pageIndex.toString())
+                    parameters.append(NetworkConstants.PARAM_PAGE, pageIndex.toString())
                 }
             }
                 .body<RemoteEpisodePage>()

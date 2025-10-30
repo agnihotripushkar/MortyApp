@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Error messages displayed to users -->
+    
+    <!-- Generic errors -->
+    <string name="error_generic">Something went wrong</string>
+    <string name="error_network">Whoops, something went wrong</string>
+    <string name="error_loading">Failed to load data</string>
+    
+    <!-- Specific error contexts -->
+    <string name="error_character_load">Failed to load character details</string>
+    <string name="error_episodes_load">Failed to load episodes</string>
+    <string name="error_no_data">No data available</string>
+    
+</resources>
