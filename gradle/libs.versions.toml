@@ -25,6 +25,12 @@ hilt = "2.48"
 hiltNavigation = "1.2.0"
 lifecycleRuntimeKtxVersion = "2.8.2"
 coreSplashscreen = "1.0.1"
+
+# Testing
+mockk = "1.13.8"
+coroutinesTest = "1.7.3"
+turbine = "1.0.0"
+ktorClientMock = "2.3.6"
 [libraries]
 
 androidx-core-splashscreen = { module = "androidx.core:core-splashscreen", version.ref = "coreSplashscreen" }
@@ -64,6 +70,13 @@ androidx-material3-window = { group = "androidx.compose.material3", name = "mate
 androidx-material3-nav = { group = "androidx.compose.material3", name = "material3-adaptive-navigation-suite", version.ref="material3Nav"}
 material-icons-core = { module = "androidx.compose.material:material-icons-core", version.ref = "material-icons-core" }
 material-icons-extended = { module = "androidx.compose.material:material-icons-extended", version.ref = "material-icons-extended" }
+
+# Testing libraries
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk" }
+coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "coroutinesTest" }
+turbine = { module = "app.cash.turbine:turbine", version.ref = "turbine" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktorClientMock" }
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
