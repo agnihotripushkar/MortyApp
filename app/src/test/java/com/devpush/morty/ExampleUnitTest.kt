@@ -1,17 +1,15 @@
 package com.devpush.morty
 
 import org.junit.Test
-
 import org.junit.Assert.*
 
 /**
- * Example local unit test, which will execute on the development machine (host).
- *
- * See [testing documentation](http://d.android.com/tools/testing).
+ * Basic sanity test for the app module
  */
-class ExampleUnitTest {
+class AppModuleSanityTest {
+    
     @Test
-    fun addition_isCorrect() {
+    fun `addition is correct`() {
         assertEquals(4, 2 + 2)
     }
 }
