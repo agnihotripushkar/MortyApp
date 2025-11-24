@@ -1,0 +1,43 @@
+# Codecov Configuration for MortyApp
+
+codecov:
+  require_ci_to_pass: yes
+  notify:
+    wait_for_ci: yes
+
+coverage:
+  precision: 2
+  round: down
+  range: "70...100"
+  
+  status:
+    project:
+      default:
+        target: 70%
+        threshold: 2%
+        if_ci_failed: error
+    
+    patch:
+      default:
+        target: 70%
+        threshold: 2%
+
+comment:
+  layout: "reach,diff,flags,tree,files"
+  behavior: default
+  require_changes: no
+  require_base: no
+  require_head: yes
+
+ignore:
+  - "app/src/androidTest/**"
+  - "app/src/test/**"
+  - "network/src/androidTest/**"
+  - "network/src/test/**"
+  - "**/R.java"
+  - "**/BuildConfig.java"
+  - "**/*Test.kt"
+  - "**/*Test.java"
+  - "**/ui/theme/**"
+  - "**/MainActivity.kt"
+  - "**/MyApplication.kt"
